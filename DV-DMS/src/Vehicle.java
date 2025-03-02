@@ -93,19 +93,18 @@ public class Vehicle {
      * Computes the current price of the vehicle using a simple depreciation formula.
      * Formula: currentPrice = originalPrice * (1 - (log(mileage)))^(age)
      */
-    public double computeCurrentPrice(Integer currentYear) {
+    public double computeCurrentPrice(double depRate, int currentYear) {
         int age = currentYear - this.year;
         if (age < 0) {
             age = 0;
         }
-        double deprRate = Math.log10(   (double) this.mileage / 10);
-        if (deprRate < 0) {
-            deprRate = 0;
+        if (depRate < 0){
+            depRate = 0;
         }
-        if (deprRate >= 1) {
-            deprRate = 0.99;
+        if (depRate > 1){
+            depRate = 1;
         }
-        return price * Math.pow((1 - deprRate), age);
+        return price * Math.pow((1 - depRate), age);
     }
 
     /**

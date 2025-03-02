@@ -28,6 +28,17 @@ public class Interface {
     }
 
     /**
+     * method: updateScanner
+     * parameters: None
+     * return: None
+     * purpose: Reinitializes the scanner to use the current System.in
+     * For debugging and testing only. Not used during normal operations.
+     */
+    public void updateScanner() {
+        scanner = new Scanner(System.in);
+    }
+
+    /**
      * method: run
      * parameters: None
      * return: None
@@ -76,7 +87,7 @@ public class Interface {
      * return: choice
      * purpose: Displays the main menu and retrieves the user's choice with input validation.
      */
-    private int displayMenu() {
+    private Integer displayMenu() {
         System.out.println("\n--- Vehicle Inventory DMS ---");
         System.out.println("1. Add Vehicle");
         System.out.println("2. Load Vehicles from File");
@@ -98,10 +109,10 @@ public class Interface {
     /**
      * method: addVehicleManually
      * parameters: None
-     * return: None
+     * return: Boolean
      * purpose: Adds a vehicle by prompting the user for details via CLI and performs input validation.
      */
-    private void addVehicleManually() {
+    Boolean addVehicleManually() {
         try {
             System.out.println("\n--- Add Vehicle ---");
             System.out.print("Enter VIN (integer): ");
@@ -110,7 +121,7 @@ public class Interface {
             // Check if a vehicle with the same VIN already exists
             if (getVehicleByVin(vin) != null) {
                 System.out.println("Vehicle with VIN " + vin + " already exists.");
-                return;
+                return false;
             }
 
             System.out.print("Enter Make: ");
@@ -129,20 +140,23 @@ public class Interface {
             Vehicle vehicle = new Vehicle(vin, make, model, year, mileage, price, color);
             vehicles.add(vehicle);
             System.out.println("Vehicle added successfully.");
+            return true;
         } catch (NumberFormatException e) {
             System.out.println("Input format error: " + e.getMessage());
+            return false;
         } catch (Exception e) {
             System.out.println("Error adding vehicle: " + e.getMessage());
+            return false;
         }
     }
 
     /**
      * method: removeVehicle
      * parameters: None
-     * return: None
+     * return: Boolean
      * purpose: Removes a vehicle from the list by prompting the user for a VIN and validating the input.
      */
-    private void removeVehicle() {
+    Boolean removeVehicle() {
         try {
             System.out.println("\n--- Remove Vehicle ---");
             System.out.print("Enter VIN of vehicle to remove: ");
@@ -151,23 +165,27 @@ public class Interface {
             if (vehicle != null) {
                 vehicles.remove(vehicle);
                 System.out.println("Vehicle removed successfully.");
+                return true;
             } else {
                 System.out.println("No vehicle found with VIN " + vin);
+                return false;
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid VIN. Please enter a valid integer.");
+            return false;
         } catch (Exception e) {
             System.out.println("Error removing vehicle: " + e.getMessage());
+            return false;
         }
     }
 
     /**
      * method: updateVehicle
      * parameters: None
-     * return: None
+     * return: Boolean
      * purpose: Updates the details of an existing vehicle based on user input and validates the updated data.
      */
-    private void updateVehicle() {
+    Boolean updateVehicle() {
         try {
             System.out.println("\n--- Update Vehicle ---");
             System.out.print("Enter VIN of vehicle to update: ");
@@ -216,23 +234,27 @@ public class Interface {
                 }
 
                 System.out.println("Vehicle updated successfully.");
+                return true;
             } else {
                 System.out.println("No vehicle found with VIN " + vin);
+                return false;
             }
         } catch (NumberFormatException e) {
             System.out.println("Input format error: " + e.getMessage());
+            return false;
         } catch (Exception e) {
             System.out.println("Error updating vehicle: " + e.getMessage());
+            return false;
         }
     }
 
     /**
      * method: displayAllVehicles
      * parameters: None
-     * return: None
+     * return: Boolean
      * purpose: Displays all vehicles currently stored in the system.
      */
-    private void displayAllVehicles() {
+    public List<Vehicle> displayAllVehicles() {
         System.out.println("\n--- Vehicle List ---");
         if (vehicles.isEmpty()) {
             System.out.println("No vehicles available.");
@@ -241,16 +263,17 @@ public class Interface {
                 System.out.println(v.toString());
             }
         }
+        return this.vehicles;
     }
 
     /**
      * method: computeCurrentPrice
      * parameters: None
-     * return: None
+     * return: Double
      * purpose: Prompts the user for a VIN and current year,
      * then computes and displays the vehicle's estimated current price.
      */
-    private void computeCurrentPrice() {
+    Double computeCurrentPrice() {
         try {
             System.out.println("\n--- Compute Current Price ---");
             System.out.print("Enter VIN of vehicle: ");
@@ -258,34 +281,39 @@ public class Interface {
             Vehicle vehicle = getVehicleByVin(vin);
             if (vehicle == null) {
                 System.out.println("No vehicle found with VIN " + vin);
-                return;
+                return null;
             }
+            System.out.print("Enter annual depreciation rate (e.g., 0.1 for 10%): ");
+            double depRate = Double.parseDouble(scanner.nextLine());
             System.out.print("Enter current year: ");
             int currentYear = Integer.parseInt(scanner.nextLine());
-            double currentPrice = vehicle.computeCurrentPrice(currentYear);
-            System.out.printf("The computed current price is: %.2f\n", currentPrice);
+            double currentPrice = vehicle.computeCurrentPrice(depRate, currentYear);
+            System.out.println("The computed current price is: " + currentPrice);
+            return currentPrice;
         } catch (NumberFormatException e) {
             System.out.println("Invalid input format: " + e.getMessage());
+            return null;
         } catch (Exception e) {
             System.out.println("Error computing current price: " + e.getMessage());
+            return null;
         }
     }
 
     /**
      * method: addVehiclesFromFile
      * parameters: None
-     * return: None
+     * return: Integer
      * purpose: Prompts the user for a file path, fixes a common formatting error in Windows,
      * reads vehicle data from the specified text file,and adds valid vehicles to the system.
      */
-    private void addVehiclesFromFile() {
+    Integer addVehiclesFromFile() {
         System.out.println("\n--- Load Vehicles from File ---");
         System.out.print("Enter the file path: ");
         String filePath = scanner.nextLine();
+        Integer countLoaded = 0;
         filePath = filePath.replace("\"", "");     //These two lines alter the formatting of the path
         filePath = filePath.replace("\\", "/");    //provided by the 'Copy as Path' option on Windows
-                                                                    //to fit the formatting expected by FileReader
-        int countLoaded = 0;
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -308,6 +336,7 @@ public class Interface {
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
+        return countLoaded;
     }
 
     /**
@@ -326,9 +355,9 @@ public class Interface {
             Integer vin = Integer.parseInt(tokens[0].trim());
             String make = tokens[1].trim();
             String model = tokens[2].trim();
-            int year = Integer.parseInt(tokens[3].trim());
-            int mileage = Integer.parseInt(tokens[4].trim());
-            double price = Double.parseDouble(tokens[5].trim());
+            Integer year = Integer.parseInt(tokens[3].trim());
+            Integer mileage = Integer.parseInt(tokens[4].trim());
+            Double price = Double.parseDouble(tokens[5].trim());
             String color = tokens[6].trim();
             return new Vehicle(vin, make, model, year, mileage, price, color);
         } catch (NumberFormatException e) {
