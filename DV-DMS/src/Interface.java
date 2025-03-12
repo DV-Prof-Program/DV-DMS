@@ -371,12 +371,116 @@ public class Interface {
      * return: Vehicle - the vehicle with the matching VIN, or null if not found
      * purpose: Searches the list of vehicles for a vehicle with the specified VIN.
      */
-    private Vehicle getVehicleByVin(Integer vin) {
+    Vehicle getVehicleByVin(Integer vin) {
         for (Vehicle v : vehicles) {
             if (v.getVin().equals(vin)) {
                 return v;
             }
         }
         return null;
+    }
+    /**
+     * method: addVehicle
+     * parameters: Integer vin, String make, String model, int year, int mileage, double price, String color
+     * return: boolean
+     * purpose: Adds a vehicle using provided parameters.
+     */
+    public boolean addVehicleManually(Integer vin, String make, String model, int year, int mileage, double price, String color) {
+        if (getVehicleByVin(vin) != null) {
+            return false;
+        }
+        Vehicle vehicle = new Vehicle(vin, make, model, year, mileage, price, color);
+        vehicles.add(vehicle);
+        return true;
+    }
+
+    /**
+     * method: removeVehicle
+     * parameters: Integer vin
+     * return: boolean
+     * purpose: Removes a vehicle with the given VIN.
+     */
+    public boolean removeVehicle(Integer vin) {
+        Vehicle vehicle = getVehicleByVin(vin);
+        if (vehicle != null) {
+            vehicles.remove(vehicle);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * method: updateVehicle
+     * parameters: Integer vin, String newMake, String newModel, Integer newYear, Integer newMileage, Double newPrice, String newColor
+     * return:
+     * purpose: Updates the vehicle with the given VIN. Null or empty parameters indicate no change.
+     */
+    public boolean updateVehicle(Integer vin, String newMake, String newModel, Integer newYear, Integer newMileage, Double newPrice, String newColor) {
+        Vehicle vehicle = getVehicleByVin(vin);
+        if (vehicle == null) {
+            return false;
+        }
+        if (newMake != null && !newMake.trim().isEmpty()) {
+            vehicle.setMake(newMake);
+        }
+        if (newModel != null && !newModel.trim().isEmpty()) {
+            vehicle.setModel(newModel);
+        }
+        if (newYear != null) {
+            vehicle.setYear(newYear);
+        }
+        if (newMileage != null) {
+            vehicle.setMileage(newMileage);
+        }
+        if (newPrice != null) {
+            vehicle.setPrice(newPrice);
+        }
+        if (newColor != null && !newColor.trim().isEmpty()) {
+            vehicle.setColor(newColor);
+        }
+        return true;
+    }
+
+    /**
+     * method: computeCurrentPrice
+     * parameters: Integer vin, double deprRate, int currentYear
+     * return: Double
+     * purpose: Computes the current price of the vehicle with given VIN.
+     */
+    public Double computeCurrentPrice(Integer vin, double deprRate, int currentYear) {
+        Vehicle vehicle = getVehicleByVin(vin);
+        if (vehicle == null) {
+            return null;
+        }
+        return vehicle.computeCurrentPrice(deprRate, currentYear);
+    }
+
+    /**
+     * method: loadVehiclesFromFile
+     * parameters: String filePath
+     * return: Integer
+     * purpose: Loads vehicles from a file at the given file path.
+     */
+    public Integer addVehiclesFromFile(String filePath) {
+        int countLoaded = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                try {
+                    Vehicle vehicle = parseVehicle(line);
+                    if (vehicle != null) {
+                        if (getVehicleByVin(vehicle.getVin()) == null) {
+                            vehicles.add(vehicle);
+                            countLoaded++;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error parsing line: " + line + ". Error: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+        return countLoaded;
     }
 }
