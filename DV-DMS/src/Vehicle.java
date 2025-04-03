@@ -16,10 +16,14 @@ public class Vehicle {
     private String color;
 
     /**
-     * method: Vehicle (Constructor)
-     * parameters: Integer vin, String make, String model, Integer year, Integer mileage, Double price, String color
-     * return: None
-     * purpose: Initializes a new Vehicle object with the provided vin, make, model, year, mileage, price, and color.
+     * Vehicle - Constructs a new Vehicle with the specified attributes.
+     * @param vin An Integer containing the Vehicle Identification Number.
+     * @param make A String containing the make of the vehicle (e.g., Toyota, Dodge).
+     * @param model A String containing the model of the vehicle (e.g., Prius, Charger).
+     * @param year An int representing the year the vehicle was manufactured.
+     * @param mileage An int representing the total mileage of the vehicle.
+     * @param price A double representing the original price of the vehicle.
+     * @param color A String representing the color of the vehicle (e.g., Red, Neon Pink).
      */
     public Vehicle(Integer vin, String make, String model, Integer year, Integer mileage, Double price, String color) {
         setVin(vin);
@@ -32,66 +36,126 @@ public class Vehicle {
     }
 
     /**
-     * method: Getters
-     * parameters: None
-     * return: vin, make, model, year, mileage, price, and color
-     * purpose: Returns one of: vin, make, model, year, mileage, price, or color, depending on which is used.
+     * Returns the vehicle identification number.
+     *
+     * @return Integer representing the VIN.
      */
     public Integer getVin() {
         return vin;
     }
+    /**
+     * Returns the make of the vehicle.
+     *
+     * @return String representing the make.
+     */
     public String getMake() {
         return make;
     }
+    /**
+     * Returns the model of the vehicle.
+     *
+     * @return String representing the model.
+     */
     public String getModel() {
         return model;
     }
+    /**
+     * Returns the manufacturing year of the vehicle.
+     *
+     * @return int representing the year.
+     */
     public Integer getYear() {
         return year;
     }
+    /**
+     * Returns the mileage of the vehicle.
+     *
+     * @return int representing the mileage.
+     */
     public Integer getMileage() {
         return mileage;
     }
+    /**
+     * Returns the original price of the vehicle.
+     *
+     * @return double representing the price.
+     */
     public Double getPrice() {
         return price;
     }
+    /**
+     * Returns the color of the vehicle.
+     *
+     * @return String representing the color.
+     */
     public String getColor() {
         return color;
     }
 
     /**
-     * method: Setters
-     * parameters: Integer vin, String make, String model, Integer year, Integer mileage, Double price, and String color
-     * return: None
-     * purpose: Sets the value of: vin, make, model, year, mileage, price, or color, depending on which is used.
+     * Sets the VIN of the vehicle.
+     *
+     * @param vin An Integer representing the VIN.
      */
     public void setVin(Integer vin) {
         this.vin = vin;
     }
+    /**
+     * Sets the make of the vehicle.
+     *
+     * @param make A String representing the vehicle's make.
+     */
     public void setMake(String make) {
         this.make = make;
     }
+    /**
+     * Sets the model of the vehicle.
+     *
+     * @param model A String representing the vehicle's model.
+     */
     public void setModel(String model) {
         this.model = model;
     }
+    /**
+     * Sets the manufacturing year of the vehicle.
+     *
+     * @param year An Integer representing the vehicle's production year.
+     */
     public void setYear(Integer year) {
         this.year = year;
     }
+    /**
+     * Sets the current mileage of the vehicle.
+     *
+     * @param mileage An Integer representing the vehicle's current mileage.
+     */
     public void setMileage(Integer mileage) {
         this.mileage = mileage;
     }
+    /**
+     * Sets the original production price of the vehicle.
+     *
+     * @param price A Double representing the vehicle's price at production.
+     */
     public void setPrice(Double price) {
         this.price = price;
     }
+    /**
+     * Sets the color of the vehicle.
+     *
+     * @param color A String representing the vehicle's color.
+     */
     public void setColor(String color) {
         this.color = color;
     }
 
     /**
-     * method: computeCurrentPrice
-     * parameters:
-     * Computes the current price of the vehicle using a simple depreciation formula.
-     * Formula: currentPrice = originalPrice * (1 - (log(mileage)))^(age)
+     * Computes the current price of the vehicle using a depreciation formula.
+     * Formula: currentPrice = originalPrice * (1 - depRate)^age, where age = currentYear - year.
+     *
+     * @param depRate A double representing the depreciation rate (e.g., 0.1 for 10%).
+     * @param currentYear An int representing the current year.
+     * @return double representing the computed current price.
      */
     public double computeCurrentPrice(double depRate, int currentYear) {
         int age = currentYear - this.year;
@@ -108,11 +172,10 @@ public class Vehicle {
     }
 
     /**
-     * method: toString
-     * parameters: None
-     * return: String
-     * purpose: Overrides the default toString to return a string representation of the Vehicle object
+     * Overrides the default toString to return a string representation of the Vehicle object
      * in the format "vin, make, model, year, mileage, price, color".
+     *
+     * @return String representing the vehicle's details.
      */
     @Override
     public String toString() {

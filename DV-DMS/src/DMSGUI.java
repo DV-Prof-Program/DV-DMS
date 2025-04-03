@@ -4,10 +4,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Dominick Vician, CEN-3024C-24204, March 31st, 2025
+ * DMSGUI.java
+ * This class provides a Swing-based graphical user interface that allows users to perform CRUD operations and compute
+ * the current price of vehicles directly against the MySQL database using the Interface class. The GUI includes
+ * buttons for each operation and displays results in a text area.
+ */
+
 public class DMSGUI extends JFrame {
     private Interface logic;
     private JTextArea outputArea;
 
+    /**
+     * Constructs a new DMSGUI frame and initializes the GUI components.
+     */
     public DMSGUI() {
         super("Vehicle Inventory DMS");
         logic = new Interface();
@@ -85,6 +96,9 @@ public class DMSGUI extends JFrame {
         });
     }
 
+    /**
+     * Prompts the user for input and adds a new vehicle to the MySQL database.
+     */
     private void addVehicleAction() {
         try {
             String vinStr = JOptionPane.showInputDialog(this, "Enter VIN:");
@@ -118,6 +132,9 @@ public class DMSGUI extends JFrame {
         }
     }
 
+    /**
+     * Prompts the user for a VIN and removes the corresponding vehicle from the MySQL database.
+     */
     private void removeVehicleAction() {
         try {
             String vinStr = JOptionPane.showInputDialog(this, "Enter VIN of vehicle to remove:");
@@ -134,6 +151,9 @@ public class DMSGUI extends JFrame {
         }
     }
 
+    /**
+     * Prompts the user for input and updates an existing vehicle record in the MySQL database.
+     */
     private void updateVehicleAction() {
         try {
             String vinStr = JOptionPane.showInputDialog(this, "Enter VIN of vehicle to update:");
@@ -163,6 +183,9 @@ public class DMSGUI extends JFrame {
         }
     }
 
+    /**
+     * Retrieves all vehicle records from the MySQL database and displays them in the output area.
+     */
     private void displayVehiclesAction() {
         List<Vehicle> vehicles = logic.getAllVehicles();
         StringBuilder sb = new StringBuilder();
@@ -172,6 +195,9 @@ public class DMSGUI extends JFrame {
         outputArea.setText(sb.toString());
     }
 
+    /**
+     * Prompts the user for input to compute the current price of a vehicle and displays the result.
+     */
     private void computeCurrentPriceAction() {
         try {
             String vinStr = JOptionPane.showInputDialog(this, "Enter VIN of vehicle:");
@@ -195,6 +221,9 @@ public class DMSGUI extends JFrame {
         }
     }
 
+    /**
+     * Prompts the user for MySQL database connection details and sets the configuration in the DatabaseManager class.
+     */
     private static void promptDBConfig() {
         String host = JOptionPane.showInputDialog(null, "Enter MySQL Host (default: localhost):", "localhost");
         String port = JOptionPane.showInputDialog(null, "Enter MySQL Port (default: 3306):", "3306");
@@ -219,6 +248,11 @@ public class DMSGUI extends JFrame {
         }
     }
 
+    /**
+     * The main method prompts the user for MySQL database configuration details and launches the GUI.
+     *
+     * @param args Command-line arguments (not used, but main methods require this regardless).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             promptDBConfig();
